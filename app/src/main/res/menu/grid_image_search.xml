@@ -3,7 +3,9 @@
     tools:context="com.yahoo.gridimagesearch.app.GridImageSearchActivity" >
     
     <item android:id="@+id/action_settings"
+        android:icon="@drawable/ic_action_name"
+        android:showAsAction="ifRoom|withText"
         android:title="@string/action_settings"
-        android:orderInCategory="100"
-        android:showAsAction="never" />
+        android:onClick="onClickAction"
+        android:orderInCategory="100" />
 </menu>
