@@ -30,16 +30,21 @@ public class GridImageSearchActivity extends Activity {
     EditText    etQuery;
     Button      btSearch;
     GridView    gvResults;
+    StringBuilder queryString;
     ArrayList<ImageResult> imageResults = new ArrayList<ImageResult>();
     ImageResultsArrayAdapter imageAdapter;
 
-
+    static final int RESULT_CODE=25;
     static final int MAX_PAGE_COUNT=8;
+
+    ImageSearchParameters parameters;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_grid_image_search);
+        parameters = new ImageSearchParameters();
+        //Toast.makeText(getApplicationContext(),"Parameter init",Toast.LENGTH_SHORT).show();
         setupViews();
         imageAdapter = new ImageResultsArrayAdapter(this, imageResults);
         gvResults.setAdapter(imageAdapter);
@@ -56,26 +61,46 @@ public class GridImageSearchActivity extends Activity {
         gvResults.setOnScrollListener(new EndlessScrollListener() {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
-
                 customLoadMoreDataFromApi(page);
             }
         });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if(requestCode == RESULT_CODE && resultCode == RESULT_OK) {
+            String size = data.getExtras().getString("size");
+            String type = data.getExtras().getString("type");
+            String domain = data.getExtras().getString("domain");
+            String color = data.getExtras().getString("color");
+            parameters.setColor(color);
+            parameters.setDomain(domain);
+            parameters.setSize(size);
+            parameters.setType(type);
+
+            //Toast.makeText(getApplicationContext(),parameters.toString(),Toast.LENGTH_SHORT).show();
+            customLoadMoreDataFromApi(0);
+        }
+    }
+
+    //This is for menu item.
+    public void onClickAction(MenuItem m) {
+        Intent i = new Intent(this,SettingActivity.class);
+        i.putExtra("parameters",parameters);
+        startActivityForResult(i,RESULT_CODE);
+    }
     public void customLoadMoreDataFromApi(int page) {
-
-        String query = etQuery.getText().toString();
-        //Toast.makeText(this,query,Toast.LENGTH_SHORT).show();
-
         AsyncHttpClient client = new AsyncHttpClient();
 
         if (page >= MAX_PAGE_COUNT) { page=0; imageResults.clear();}
-        if(page ==0) imageResults.clear();
+        if (page ==0) imageResults.clear();
 
-        Toast.makeText(getApplicationContext(),"Are we scrolling?"+page,Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(),"Are we scrolling?"+page+"Setting "+parameters.toString(),Toast.LENGTH_SHORT).show();
 
-        String googleUri = "https://ajax.googleapis.com/ajax/services/search/images?rsz=8&" +
-                "start=" + page + "&v=1.0&q=" + Uri.encode(query);
+        String googleUri = "https://ajax.googleapis.com/ajax/services/search/images?" +
+                "start=" + page+"&"+parameters.toString();
+
 
         //Toast.makeText(this,googleUri,Toast.LENGTH_SHORT).show();
         client.get(googleUri, new JsonHttpResponseHandler() {
@@ -87,7 +112,7 @@ public class GridImageSearchActivity extends Activity {
                     imageJsonResults = response.getJSONObject("responseData").getJSONArray("results");
                     //imageResults.clear();
                     imageAdapter.addAll(ImageResult.fromJSONArray(imageJsonResults));
-                    Log.d("DEBUG",imageResults.toString());
+                    //Log.d("DEBUG",imageResults.toString());
 
 
                 } catch (JSONException e){
@@ -107,7 +132,10 @@ public class GridImageSearchActivity extends Activity {
         //ArrayList<ImageResult> imageResult = new ArrayList<ImageResult>();
     }
 
+    // This is on Search button.
     public  void onImageSearch(View v) {
+        String query = etQuery.getText().toString();
+        parameters.setQuery(query);
         customLoadMoreDataFromApi(0);
     }
 
