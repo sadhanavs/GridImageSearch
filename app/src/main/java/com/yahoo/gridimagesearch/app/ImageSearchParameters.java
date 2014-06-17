@@ -22,10 +22,10 @@ public class ImageSearchParameters implements Serializable {
 
     public ImageSearchParameters() {
         defaultParams="rsz=8&v=1.0";
-        color="";
-        size="";
+        color="black";
+        size="large";
         domain="";
-        type="";
+        type="photo";
         query="";
 
     }
@@ -61,6 +61,10 @@ public class ImageSearchParameters implements Serializable {
 
     public void setDomain(String domain) {
         this.domain = domain;
+    }
+
+    public String getDomain() {
+        return this.domain;
     }
 
     public String toString() {

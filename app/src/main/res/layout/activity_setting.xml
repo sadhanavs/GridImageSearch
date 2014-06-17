@@ -16,7 +16,8 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_alignParentEnd="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -94,7 +95,7 @@
         android:layout_below="@+id/spImageType"
         android:layout_alignRight="@+id/tvColor"
         android:layout_alignEnd="@+id/tvColor"
-        android:layout_marginTop="45dp"
+        android:layout_marginTop="30dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:gravity="bottom|left" />

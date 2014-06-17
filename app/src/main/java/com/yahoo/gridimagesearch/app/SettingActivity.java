@@ -21,17 +21,43 @@ public class SettingActivity extends Activity {
     Spinner spSize;
     Spinner spType;
     EditText etSite;
+    ArrayAdapter colorDataAdapter;
+    ArrayAdapter imageTypeDataAdapter;
+    ArrayAdapter imageSizeDataAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
         spColor = (Spinner) findViewById(R.id.spColor);
-        spSize = (Spinner) findViewById(R.id.spSize);
-        spType = (Spinner) findViewById(R.id.spImageType);
-        etSite = (EditText) findViewById(R.id.etSite);
-        populateSpinners();
+        spSize  = (Spinner) findViewById(R.id.spSize);
+        spType  = (Spinner) findViewById(R.id.spImageType);
+        etSite  = (EditText) findViewById(R.id.etSite);
 
+        ImageSearchParameters parameters = (ImageSearchParameters)getIntent().getSerializableExtra("parameters");
+        populateSpinners();
+        if(parameters != null) {
+
+            if (!parameters.getColor().isEmpty()) {
+                int index = colorDataAdapter.getPosition(parameters.getColor());
+                spColor.setSelection(index);
+            }
+
+            if (!parameters.getSize().isEmpty()) {
+                int index = imageSizeDataAdapter.getPosition(parameters.getSize());
+                spSize.setSelection(index);
+            }
+
+            if (!parameters.getType().isEmpty()) {
+                int index = imageTypeDataAdapter.getPosition(parameters.getType());
+                spType.setSelection(index);
+            }
+
+            if (!parameters.getDomain().isEmpty()) {
+                etSite.setText(parameters.getDomain());
+            }
+        }
 
     }
 
@@ -47,41 +73,43 @@ public class SettingActivity extends Activity {
         data.putExtra("size",size);
         data.putExtra("type",type);
         data.putExtra("domain",domain);
-        //Toast.makeText(getApplicationContext(),settings, Toast.LENGTH_SHORT).show();
-        setResult(RESULT_OK,data);
+        setResult(RESULT_OK, data);
         finish();
 
 
     }
 
     private void populateSpinners() {
-        spColor.setPrompt("Choose Image Color");
         List<String> spColorData = new ArrayList<String>();
-        spColorData.add("Red");
-        spColorData.add("Blue");
-        spColorData.add("Green");
-        spColorData.add("Pink");
-        spColorData.add("Black");
+        spColorData.add("red");
+        spColorData.add("blue");
+        spColorData.add("green");
+        spColorData.add("pink");
+        spColorData.add("black");
         spColorData.add("white");
-        ArrayAdapter colorDtaAdapter = new ArrayAdapter(this,android.R.layout.simple_spinner_dropdown_item,spColorData);
-        spColor.setAdapter(colorDtaAdapter);
+        colorDataAdapter = new ArrayAdapter(this,android.R.layout.simple_spinner_dropdown_item,spColorData);
+        spColor.setAdapter(colorDataAdapter);
+        spColor.setPrompt("Choose Image Color");
+
+
 
         List<String> spImageSizeData = new ArrayList<String>();
-        spImageSizeData.add("Icon");
-        spImageSizeData.add("Small");
-        spImageSizeData.add("Large");
-        spImageSizeData.add("XLarge");
-        ArrayAdapter imageSizeDtaAdapter = new ArrayAdapter(this,android.R.layout.simple_spinner_dropdown_item,spImageSizeData);
-        spSize.setAdapter(imageSizeDtaAdapter);
+        spImageSizeData.add("icon");
+        spImageSizeData.add("small");
+        spImageSizeData.add("large");
+        spImageSizeData.add("xLarge");
+        imageSizeDataAdapter = new ArrayAdapter(this,android.R.layout.simple_spinner_dropdown_item,spImageSizeData);
+        spSize.setAdapter(imageSizeDataAdapter);
+        spSize.setPrompt("Choose Image Size");
 
         List<String> spImageTypeData = new ArrayList<String>();
-        spImageTypeData.add("Face");
-        spImageTypeData.add("Photo");
-        spImageTypeData.add("Clipart");
-        spImageTypeData.add("Lineart");
-        ArrayAdapter imageTypeDataAdapter = new ArrayAdapter(this,android.R.layout.simple_spinner_dropdown_item,spImageTypeData);
+        spImageTypeData.add("face");
+        spImageTypeData.add("photo");
+        spImageTypeData.add("clipart");
+        spImageTypeData.add("lineart");
+        imageTypeDataAdapter = new ArrayAdapter(this,android.R.layout.simple_spinner_dropdown_item,spImageTypeData);
         spType.setAdapter(imageTypeDataAdapter);
-
+        spType.setPrompt("Choose Image Type");
 
 
 

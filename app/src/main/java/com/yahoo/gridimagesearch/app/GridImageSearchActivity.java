@@ -44,6 +44,7 @@ public class GridImageSearchActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_grid_image_search);
         parameters = new ImageSearchParameters();
+        //Toast.makeText(getApplicationContext(),"Parameter init",Toast.LENGTH_SHORT).show();
         setupViews();
         imageAdapter = new ImageResultsArrayAdapter(this, imageResults);
         gvResults.setAdapter(imageAdapter);
@@ -86,6 +87,7 @@ public class GridImageSearchActivity extends Activity {
     //This is for menu item.
     public void onClickAction(MenuItem m) {
         Intent i = new Intent(this,SettingActivity.class);
+        i.putExtra("parameters",parameters);
         startActivityForResult(i,RESULT_CODE);
     }
     public void customLoadMoreDataFromApi(int page) {
@@ -110,7 +112,7 @@ public class GridImageSearchActivity extends Activity {
                     imageJsonResults = response.getJSONObject("responseData").getJSONArray("results");
                     //imageResults.clear();
                     imageAdapter.addAll(ImageResult.fromJSONArray(imageJsonResults));
-                    Log.d("DEBUG",imageResults.toString());
+                    //Log.d("DEBUG",imageResults.toString());
 
 
                 } catch (JSONException e){
